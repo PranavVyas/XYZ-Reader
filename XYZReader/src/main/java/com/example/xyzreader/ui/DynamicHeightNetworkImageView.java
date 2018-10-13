@@ -2,6 +2,7 @@ package com.example.xyzreader.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 import com.android.volley.toolbox.NetworkImageView;
 
@@ -22,6 +23,8 @@ public class DynamicHeightNetworkImageView extends NetworkImageView {
 
     public void setAspectRatio(float aspectRatio) {
         mAspectRatio = aspectRatio;
+        this.setScaleType(ScaleType.CENTER_CROP);
+        //TODO Chage Scale Type Fromw Here
         requestLayout();
     }
 
