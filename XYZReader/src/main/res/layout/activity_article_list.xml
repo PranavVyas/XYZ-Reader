@@ -15,15 +15,13 @@
             android:layout_height="match_parent"
             app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
-            app:contentScrim="@android:color/holo_blue_dark"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="true"
-            app:title="@string/app_name"
             >
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/primaryColor"
                 android:scaleType="center"
                 android:src="@drawable/logo"
                 app:layout_collapseMode="parallax" />
@@ -37,7 +35,6 @@
                 android:layout_marginRight="@dimen/list_toolbar_side_margin"
                 app:layout_collapseMode="pin"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-                <!-- TODO Add Image here-->
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
 
