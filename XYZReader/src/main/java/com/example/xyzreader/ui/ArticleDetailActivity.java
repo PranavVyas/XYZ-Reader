@@ -5,14 +5,18 @@ import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
@@ -22,8 +26,10 @@ import android.widget.Toast;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
-
-import static android.view.View.GONE;
+import com.example.xyzreader.data.SharedUtils;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 /**
  * An activity representing a single Article detail screen, letting you swipe between articles.
@@ -53,22 +59,17 @@ public class ArticleDetailActivity extends AppCompatActivity
         }
         setContentView(R.layout.activity_article_detail);
         getLoaderManager().initLoader(0, null, this);
-
         mPagerAdapter = new MyPagerAdapter(getFragmentManager());
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
-        Toast.makeText(this, "Stares asdlasdkljaslkalskd", Toast.LENGTH_SHORT).show();
+
         mPager.setPageMargin((int) TypedValue
                 .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics()));
         mPager.setPageMarginDrawable(new ColorDrawable(0x22000000));
-
-        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        final DotsIndicator indicator = (DotsIndicator) findViewById(R.id.dots_indicator);
+        ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-                mUpButton.animate()
-                        .alpha((state == ViewPager.SCROLL_STATE_IDLE) ? 1f : 0f)
-                        .setDuration(300);
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
 
             @Override
@@ -79,7 +80,18 @@ public class ArticleDetailActivity extends AppCompatActivity
                 mSelectedItemId = mCursor.getLong(ArticleLoader.Query._ID);
                 updateUpButtonPosition();
             }
-        });
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                mUpButton.animate()
+                        .alpha((state == ViewPager.SCROLL_STATE_IDLE) ? 1f : 0f)
+                        .setDuration(300);
+            }
+        };
+        mPager.addOnPageChangeListener(pageChangeListener);
+        //TODO Indicator
+        indicator.setDotsClickable(true);
+        indicator.setViewPager(mPager);
 
         mUpButtonContainer = findViewById(R.id.up_container);
 
@@ -109,6 +121,46 @@ public class ArticleDetailActivity extends AppCompatActivity
                 mStartId = ItemsContract.Items.getItemId(getIntent().getData());
                 mSelectedItemId = mStartId;
             }
+        }
+        checkFirstRunInstruction();
+    }
+
+    private void checkFirstRunInstruction() {
+        if (SharedUtils.isFirstTime(this, getLocalClassName())) {
+            final Display display = getWindowManager().getDefaultDisplay();
+            final Drawable droid = ContextCompat.getDrawable(this, R.drawable.logo);
+            final Rect droidTarget = new Rect(0, 0, droid.getIntrinsicWidth() * 2, droid.getIntrinsicHeight() * 2);
+            droidTarget.offset(0, display.getHeight() / 2);
+
+            new TapTargetSequence(this)
+                    .targets(
+                            TapTarget.forBounds(droidTarget, "Welcome To Article Detail Page", "This is detail page in which you can read articles and also share using the Floating Action Button")
+                                    .tintTarget(false)
+                                    .cancelable(false)
+                                    .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
+                                    .outerCircleColor(R.color.primaryLightColor),
+                            TapTarget.forBounds(droidTarget, "Controls and Description", "Swipe to access the other articles also this article can be seen in indicator below. Click on Show More to reveal full article, Note that reveling full article may cause device to work hard so it might no table to cache the full state after two swipes!")
+                                    .tintTarget(false)
+                                    .cancelable(false)
+                                    .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
+                                    .outerCircleColor(R.color.primaryLightColor)
+                    ).listener(new TapTargetSequence.Listener() {
+                @Override
+                public void onSequenceFinish() {
+                    Toast.makeText(ArticleDetailActivity.this, "Give it a try Now...!", Toast.LENGTH_SHORT).show();
+                    SharedUtils.setFirstTimeRun(ArticleDetailActivity.this, getLocalClassName(), false);
+                }
+
+                @Override
+                public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+
+                }
+
+                @Override
+                public void onSequenceCanceled(TapTarget lastTarget) {
+                    Toast.makeText(ArticleDetailActivity.this, "Why stop now? Only two steps are there!", Toast.LENGTH_SHORT).show();
+                }
+            }).start();
         }
     }
 

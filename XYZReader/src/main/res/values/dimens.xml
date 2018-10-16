@@ -7,5 +7,11 @@
     <dimen name="fab_elevation">2dp</dimen>
     <dimen name="fab_press_translation_z">6dp</dimen>
     <dimen name="fab_margin">24dp</dimen>
+    <dimen name="dimen_default_ele_detail_body_txt">2dp</dimen>
+    <dimen name="dimen_recycler_padding_verticle">16dp</dimen>
+    <dimen name="dimen_recycler_item_text_padding_horiz">16dp</dimen>
+    <dimen name="dimen_recycler_item_text_padding_vert">4dp</dimen>
+    <dimen name="main_default_logo_image">156dp</dimen>
+    <dimen name="dimen_detail_hight_indicator_container">32dp</dimen>
 
 </resources>

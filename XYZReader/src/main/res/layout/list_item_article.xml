@@ -1,5 +1,6 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="4dp"
@@ -18,6 +19,7 @@
             android:id="@+id/thumbnail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:background="@drawable/logo"
             android:background="@color/photo_placeholder" />
 
         <View
@@ -41,12 +43,14 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="4"
-                android:paddingBottom="4dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="16dp"
-                android:textColor="@color/ltgray"
-                android:textSize="14sp" />
+                android:paddingLeft="@dimen/dimen_recycler_item_text_padding_horiz"
+                android:paddingTop="@dimen/dimen_recycler_item_text_padding_vert"
+                android:paddingRight="@dimen/dimen_recycler_item_text_padding_horiz"
+                android:paddingBottom="@dimen/dimen_recycler_item_text_padding_vert"
+                android:textColor="@color/textTitleColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="@tools:sample/cities" />
 
             <TextView
                 android:id="@+id/article_subtitle"
@@ -55,10 +59,12 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:textColor="#ffffff" />
+                android:paddingBottom="16dp"
+                android:textColor="@color/textSubtitleColor"
+                android:textSize="12sp"
+                tools:text="@tools:sample/date/ddmmyy" />
         </LinearLayout>
     </FrameLayout>
 

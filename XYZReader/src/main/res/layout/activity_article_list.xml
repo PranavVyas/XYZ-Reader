@@ -1,27 +1,28 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="156dp"
+        android:layout_height="@dimen/main_default_logo_image"
         android:background="#2979ff">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/text_title_app_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:setTitle="swsd"
             app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            >
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/primaryColor"
+                android:background="?attr/colorPrimary"
                 android:scaleType="center"
                 android:src="@drawable/logo"
                 app:layout_collapseMode="parallax" />
@@ -29,36 +30,16 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="bottom"
                 android:layout_marginLeft="@dimen/list_toolbar_side_margin"
                 android:layout_marginRight="@dimen/list_toolbar_side_margin"
                 app:layout_collapseMode="pin"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.CollapsingToolbarLayout>
+                />
 
+        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <!-- TODO LOOK HERE AGAIN -->
-    <!--<FrameLayout-->
-        <!--android:id="@+id/toolbar_container"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="112dp"-->
-        <!--android:background="?colorPrimary"-->
-        <!--android:elevation="8dp">-->
-
-    <!--</FrameLayout>-->
-
-    <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:nestedScrollingEnabled="true">-->
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="ajhdjadkjshkjhasjkhsakjhkjashdkjshkjshkjhs\n\n\n\n\n\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg\n\fdsdsd\nffgdf\ndfffgfg"/>-->
-    <!--</ScrollView>-->
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
@@ -71,10 +52,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingBottom="16dp"
+            android:paddingBottom="@dimen/dimen_recycler_padding_verticle"
             android:paddingLeft="@dimen/list_side_margin"
             android:paddingRight="@dimen/list_side_margin"
-            android:paddingTop="16dp"
+            android:paddingTop="@dimen/dimen_recycler_padding_verticle"
             android:scrollbarStyle="outsideOverlay" />
     </android.support.v4.widget.SwipeRefreshLayout>
 

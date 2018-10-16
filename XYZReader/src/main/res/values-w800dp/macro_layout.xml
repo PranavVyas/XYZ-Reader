@@ -6,4 +6,7 @@
 
     <!-- detail -->
     <dimen name="detail_card_max_width">704dp</dimen>
+
+    <dimen name="detail_image_hight">356dp</dimen>
+
 </resources>

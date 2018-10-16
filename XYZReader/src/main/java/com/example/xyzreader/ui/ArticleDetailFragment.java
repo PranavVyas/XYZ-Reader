@@ -35,9 +35,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import me.chensir.expandabletextview.ExpandableTextView;
-
 /**
  * A fragment representing a single Article detail screen. This fragment is
  * either contained in a {@link ArticleListActivity} in two-pane mode (on
@@ -121,9 +118,8 @@ public class ArticleDetailFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
-        mDrawInsetsFrameLayout = (DrawInsetsFrameLayout)
-                mRootView.findViewById(R.id.draw_insets_frame_layout);
-        mButton = (Button) mRootView.findViewById(R.id.button);
+        mDrawInsetsFrameLayout = mRootView.findViewById(R.id.draw_insets_frame_layout);
+        mButton = mRootView.findViewById(R.id.button);
         mDrawInsetsFrameLayout.setOnInsetsCallback(new DrawInsetsFrameLayout.OnInsetsCallback() {
             @Override
             public void onInsetsChanged(Rect insets) {
@@ -131,7 +127,7 @@ public class ArticleDetailFragment extends Fragment implements
             }
         });
 
-        mScrollView = (ObservableScrollView) mRootView.findViewById(R.id.scrollview);
+        mScrollView = mRootView.findViewById(R.id.scrollview);
         mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
             @Override
             public void onScrollChanged() {
@@ -142,7 +138,7 @@ public class ArticleDetailFragment extends Fragment implements
             }
         });
 
-        mPhotoView = (ImageView) mRootView.findViewById(R.id.photo);
+        mPhotoView = mRootView.findViewById(R.id.photo);
         mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
 
         mStatusBarColorDrawable = new ColorDrawable(0);
@@ -239,25 +235,29 @@ public class ArticleDetailFragment extends Fragment implements
 
             }
 
-            bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />").substring(0,1000) + "..."));
+            bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />").substring(0,1000) + " (contd...)"));
 
             mButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final Handler mHandler = new Handler() {
-                        public void handleMessage(Message msg) {
-                            //Toast.makeText(getActivity(), "Loading Views", Toast.LENGTH_SHORT).show();
-                            bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
-                            //Toast.makeText(getActivity(), "Not Loading Views bro Loading Views", Toast.LENGTH_SHORT).show();
-                        }
-                    };
-                    Thread threadToLoadTextView = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mHandler.sendEmptyMessage(UPDATE_TEXT_VIEW);
-                        }
-                    });
-                    threadToLoadTextView.start();
+                    if(bodyView.getText().length() < 1015) {
+                        final Handler mHandler = new Handler() {
+                            public void handleMessage(Message msg) {
+                                bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
+                            }
+                        };
+                        Thread threadToLoadTextView = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mHandler.sendEmptyMessage(UPDATE_TEXT_VIEW);
+                            }
+                        });
+                        threadToLoadTextView.start();
+                        mButton.setText("Read Less");
+                    }else{
+                        mButton.setText("Read More");
+                        bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />").substring(0,1000) + " (contd...)"));
+                    }
                 }
             });
 
@@ -271,9 +271,7 @@ public class ArticleDetailFragment extends Fragment implements
                                 mMutedColor = p.getDarkMutedColor(0xFF333333);
                                 mPhotoView.setImageBitmap(imageContainer.getBitmap());
                                 mRootView.findViewById(R.id.meta_bar);
-                                //TODO .setBackgroundColor(mMutedColor);
                                 updateStatusBar();
-                                //TODO Remove Expandable text view from module
                             }
                         }
 
@@ -306,6 +304,7 @@ public class ArticleDetailFragment extends Fragment implements
 
         mCursor = cursor;
         if (mCursor != null && !mCursor.moveToFirst()) {
+            Log.d(TAG, "onLoadFinished: Content in Cursor is "+mCursor.getCount());
             Log.e(TAG, "Error reading item detail cursor");
             mCursor.close();
             mCursor = null;

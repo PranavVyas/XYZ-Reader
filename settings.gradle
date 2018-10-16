@@ -1,1 +1,1 @@
-include ':XYZReader',':expandabletextview'
+include ':XYZReader', ':viewpagerdotsindicator'

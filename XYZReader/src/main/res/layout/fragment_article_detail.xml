@@ -28,8 +28,10 @@
                 <ImageView
                     android:id="@+id/photo"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop" />
+                    android:layout_height="@dimen/detail_image_hight"
+                    android:maxHeight="@dimen/detail_image_max_hight"
+                    android:scaleType="centerCrop"
+                    tools:background="@drawable/logo" />
 
                 <View
                     android:layout_width="match_parent"
@@ -42,29 +44,31 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/detail_metabar_vert_padding"
                     android:paddingLeft="@dimen/detail_inner_horiz_margin"
+                    android:paddingTop="@dimen/detail_metabar_vert_padding"
                     android:paddingRight="@dimen/detail_inner_horiz_margin"
-                    android:paddingTop="@dimen/detail_metabar_vert_padding">
+                    android:paddingBottom="@dimen/detail_metabar_vert_padding">
 
                     <TextView
                         android:id="@+id/article_title"
                         style="?android:attr/textAppearanceLarge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-condensed"
+                        android:fontFamily="sans-serif"
                         android:lineSpacingMultiplier="0.9"
                         android:paddingBottom="@dimen/detail_metabar_title_bottom_padding"
-                        android:textColor="#fff"
+                        android:textColor="@color/textTitleColor"
                         android:textSize="@dimen/detail_title_text_size"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="@tools:sample/cities" />
 
                     <TextView
                         android:id="@+id/article_byline"
                         style="?android:attr/textAppearanceSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="#8fff" />
+                        android:textColor="@color/textSubtitleColor"
+                        tools:text="@tools:sample/date/ddmmyy" />
                 </LinearLayout>
 
             </FrameLayout>
@@ -76,26 +80,12 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
                 android:background="#fff"
-                android:maxWidth="@dimen/detail_card_max_width"
                 android:orientation="vertical"
-                app:elevation="2dp"
+                app:elevation="@dimen/dimen_default_ele_detail_body_txt"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/photo_container">
 
-                <!--<me.chensir.expandabletextview.ExpandableTextView-->
-                <!--android:id="@+id/expandable_tv"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--app:DrawableAndTextGravity="right"-->
-                <!--app:collapseDrawable="@drawable/ic_arrow_up_black_24dp"-->
-                <!--app:contentTextColor="@color/primaryTextColor"-->
-                <!--app:expandCollapseTextColor="@color/primaryTextColor"-->
-                <!--app:expandDrawable="@drawable/ic_arrow_down_black_24dp"-->
-                <!--app:expandText="More"-->
-                <!--android:textSize="18sp"-->
-                <!--app:maxCollapsedLines="20">-->
-                <!--</me.chensir.expandabletextview.ExpandableTextView>-->
                 <TextView
                     android:id="@+id/article_body"
                     style="?android:attr/textAppearanceMedium"
@@ -103,19 +93,30 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/detail_inner_horiz_margin"
                     android:layout_marginRight="@dimen/detail_inner_horiz_margin"
+                    android:layout_marginTop="@dimen/dimen_recycler_item_text_padding_vert"
+                    android:layout_marginBottom="@dimen/dimen_recycler_item_text_padding_vert"
                     android:fontFamily="sans-serif"
                     android:lineSpacingMultiplier="@fraction/detail_body_line_spacing_multiplier"
-                    android:textColor="#000000"
+                    android:textColor="@color/textBodyDark"
                     android:textColorLink="@color/theme_accent"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:text="@tools:sample/lorem/random" />
             </com.example.xyzreader.ui.MaxWidthLinearLayout>
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Show Full Article"
+                android:layout_marginTop="@dimen/dimen_recycler_item_text_padding_vert"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/shape_button_rounded"
+                android:paddingStart="@dimen/dimen_recycler_item_text_padding_horiz"
+                android:paddingTop="@dimen/dimen_recycler_item_text_padding_vert"
+                android:paddingEnd="@dimen/dimen_recycler_item_text_padding_horiz"
+                android:paddingBottom="@dimen/dimen_recycler_item_text_padding_vert"
+                android:text="Read More"
+                android:textColor="@color/secondaryTextColor"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/maxWidthLinearLayout" />
@@ -125,27 +126,14 @@
         </android.support.constraint.ConstraintLayout>
     </com.example.xyzreader.ui.ObservableScrollView>
 
-    <!--<ImageButton android:id="@+id/share_fab"-->
-        <!--android:stateListAnimator="@anim/fab_state_list_anim"-->
-        <!--android:background="@drawable/add_fab_background"-->
-        <!--android:layout_gravity="bottom|end"-->
-        <!--android:layout_marginRight="@dimen/fab_margin"-->
-        <!--android:layout_marginBottom="@dimen/fab_margin"-->
-        <!--android:layout_width="56dp"-->
-        <!--android:layout_height="56dp"-->
-        <!--android:src="@drawable/ic_share"-->
-        <!--android:elevation="@dimen/fab_elevation"-->
-        <!--android:contentDescription="@string/action_share" />-->
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/share_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="28dp"
-        android:layout_marginEnd="28dp"
         android:contentDescription="@string/action_share"
         android:src="@drawable/ic_share"
-        app:fabSize="normal" />
+        app:fabSize="normal"
+        app:useCompatPadding="true" />
 
 </com.example.xyzreader.ui.DrawInsetsFrameLayout>

@@ -24,7 +24,7 @@ public class DynamicHeightNetworkImageView extends NetworkImageView {
     public void setAspectRatio(float aspectRatio) {
         mAspectRatio = aspectRatio;
         this.setScaleType(ScaleType.CENTER_CROP);
-        //TODO Chage Scale Type Fromw Here
+        //TODO Chage Scale Type From Here
         requestLayout();
     }
 

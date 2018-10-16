@@ -31,4 +31,11 @@
     <color name="secondaryDarkColor">#0031ca</color>
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#ffffff</color>
+
+    <color name="textTitleColor">#ffffff</color>
+    <color name="textSubtitleColor">#ffe0e0e0</color>
+    <color name="textBodyDark">#000000</color>
+
+    <color name="backgroundWhite">#ffffff</color>
+
 </resources>
