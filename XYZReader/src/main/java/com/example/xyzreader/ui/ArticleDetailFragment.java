@@ -14,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,14 +61,14 @@ public class ArticleDetailFragment extends Fragment implements
     private long mItemId;
     private View mRootView;
     private int mMutedColor = 0xFF333333;
-    private ObservableScrollView mScrollView;
+    //TODO 2 private ObservableScrollView mScrollView;
 
     private DrawInsetsFrameLayout mDrawInsetsFrameLayout;
     private ColorDrawable mStatusBarColorDrawable;
     private static final int UPDATE_TEXT_VIEW = 223;
 
     private int mTopInset;
-    private View mPhotoContainerView;
+    //TODO 2 private View mPhotoContainerView;
     private ImageView mPhotoView;
     private int mScrollY;
     private boolean mIsCard = false;
@@ -130,7 +131,7 @@ public class ArticleDetailFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_article_detail_new, container, false);
         mDrawInsetsFrameLayout = mRootView.findViewById(R.id.draw_insets_frame_layout);
         mButton = mRootView.findViewById(R.id.button);
         mDrawInsetsFrameLayout.setOnInsetsCallback(new DrawInsetsFrameLayout.OnInsetsCallback() {
@@ -140,19 +141,19 @@ public class ArticleDetailFragment extends Fragment implements
             }
         });
 
-        mScrollView = mRootView.findViewById(R.id.scrollview);
-        mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
-            @Override
-            public void onScrollChanged() {
-                mScrollY = mScrollView.getScrollY();
-                getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
-                mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
-                updateStatusBar();
-            }
-        });
+        //TODO 2 mScrollView = mRootView.findViewById(R.id.scrollview);
+//      TODO 2 mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
+//      TODO 2      @Override
+//      TODO 2      public void onScrollChanged() {
+//      TODO 2          mScrollY = mScrollView.getScrollY();
+//      TODO 2          getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
+//      TODO 2          mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
+//      TODO 2          updateStatusBar();
+//            TODO 2}
+//        TODO 2});
 
         mPhotoView = mRootView.findViewById(R.id.photo);
-        mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
+       //TODO 2 mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
 
         mStatusBarColorDrawable = new ColorDrawable(0);
 
@@ -216,17 +217,24 @@ public class ArticleDetailFragment extends Fragment implements
             return;
         }
 
-        TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
+        //TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
+        //TextView titleToolbar = mRootView.findViewById(R.id.toolbar_text_title);
         TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
-        final TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
+        //TODO 2 final TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
         //bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
         if (mCursor != null) {
-            mRootView.setAlpha(0);
+            //mRootView.setAlpha(0);
             mRootView.setVisibility(View.VISIBLE);
-            mRootView.animate().alpha(1);
-            titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
+            //mRootView.animate().alpha(1);
+            //titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
+            ((CollapsingToolbarLayout)mRootView.findViewById(R.id.collapsing_detail)).setTitle(mCursor.getString(ArticleLoader.Query.TITLE));
+            ((CollapsingToolbarLayout)mRootView.findViewById(R.id.collapsing_detail)).setExpandedTitleColor(getActivity().getResources().getColor(R.color.backgroundWhite));
+            ((CollapsingToolbarLayout)mRootView.findViewById(R.id.collapsing_detail)).setCollapsedTitleTextColor(getActivity().getResources().getColor(R.color.backgroundWhite));
+
+            //titleToolbar.setText(mCursor.getString(ArticleLoader.Query.TITLE));
+
             Date publishedDate = parsePublishedDate();
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
                 bylineView.setText(Html.fromHtml(
@@ -256,23 +264,23 @@ public class ArticleDetailFragment extends Fragment implements
                 @Override
                 public void onClick(View view) {
                     if(!expandedText) {
-                        final Handler mHandler = new Handler() {
-                            public void handleMessage(Message msg) {
-                                bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
-                            }
-                        };
-                        Thread threadToLoadTextView = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mHandler.sendEmptyMessage(UPDATE_TEXT_VIEW);
-                            }
-                        });
-                        //threadToLoadTextView.start();
+//                        final Handler mHandler = new Handler() {
+//                            public void handleMessage(Message msg) {
+//                                //TODO 2 bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
+//                            }
+//                        };
+//                        Thread threadToLoadTextView = new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                mHandler.sendEmptyMessage(UPDATE_TEXT_VIEW);
+//                            }
+//                        });
+//                        threadToLoadTextView.start();
                         loadDetailsViaRecyclerView(false);
                         expandedText = true;
-                        mButton.setText("Read Less");
+                        mButton.setText(R.string.read_less_btn);
                     }else{
-                        mButton.setText("Read More");
+                        mButton.setText(R.string.read_more_btn);
                         //bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />").substring(0,1000) + " (contd...)"));
                         loadDetailsViaRecyclerView(true);
                         expandedText = false;
@@ -305,9 +313,10 @@ public class ArticleDetailFragment extends Fragment implements
 //            animator.setStartDelay(100);
         } else {
             mRootView.setVisibility(View.GONE);
-            titleView.setText("N/A");
+            //titleView.setText("N/A");
+            //titleToolbar.setText("N/A");
             bylineView.setText("N/A");
-            bodyView.setText("N/A");
+            //TODO 2 bodyView.setText("N/A");
         }
     }
 
@@ -342,16 +351,16 @@ public class ArticleDetailFragment extends Fragment implements
         bindViews();
     }
 
-    public int getUpButtonFloor() {
-        if (mPhotoContainerView == null || mPhotoView.getHeight() == 0) {
-            return Integer.MAX_VALUE;
-        }
-
-        // account for parallax
-        return mIsCard
-                ? (int) mPhotoContainerView.getTranslationY() + mPhotoView.getHeight() - mScrollY
-                : mPhotoView.getHeight() - mScrollY;
-    }
+    //TODO 2 public int getUpButtonFloor() {
+    //TODO 2     if (mPhotoContainerView == null || mPhotoView.getHeight() == 0) {
+    //TODO 2         return Integer.MAX_VALUE;
+    //TODO 2     }
+    //TODO 2
+    //TODO 2     // account for parallax
+    //TODO 2     return mIsCard
+    //TODO 2             ? (int) mPhotoContainerView.getTranslationY() + mPhotoView.getHeight() - mScrollY
+    //TODO 2             : mPhotoView.getHeight() - mScrollY;
+    //TODO 2 }
 
     private List<String> generateStringArrayFromLine(String str,String escapeString){
         List<String> result = Arrays.asList(str.split(escapeString));

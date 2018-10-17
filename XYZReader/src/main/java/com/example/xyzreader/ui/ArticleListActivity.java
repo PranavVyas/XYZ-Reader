@@ -81,7 +81,7 @@ public class ArticleListActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
 
         getLoaderManager().initLoader(0, null, this);
-        checkFirstTimeRunInstructions();
+        //checkFirstTimeRunInstructions();
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         if (savedInstanceState == null) {
             refresh();
