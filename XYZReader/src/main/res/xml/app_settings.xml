@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/prefcat_ui">
+
+        <SwitchPreference
+            android:id="@+id/swith_pref_dark_theme"
+            android:defaultValue="false"
+            android:key="@string/key_pref_dark_theme"
+            android:summaryOff="@string/pref_dark_theme_summery_off"
+            android:summaryOn="@string/pref_dark_theme_summery_on"
+            android:title="@string/pref_dark_theme_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/prefcat_experimental">
+
+        <SwitchPreference
+            android:id="@+id/check_pref_dots_clickable"
+            android:defaultValue="false"
+            android:key="@string/key_pref_dots_clickable"
+            android:summaryOff="@string/pref_dots_clickable_summery_off"
+            android:summaryOn="@string/pref_dots_clickable_summery_on"
+            android:title="@string/pref_dots_clickable_title" />
+    </PreferenceCategory>
+</PreferenceScreen>

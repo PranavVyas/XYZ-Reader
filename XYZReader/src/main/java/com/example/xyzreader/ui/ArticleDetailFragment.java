@@ -1,5 +1,7 @@
 package com.example.xyzreader.ui;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Intent;
@@ -277,9 +279,13 @@ public class ArticleDetailFragment extends Fragment implements
 
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
-
+                            Toast.makeText(getActivity(), "Internet Connection Error ...Check Your Connection", Toast.LENGTH_SHORT).show();
                         }
                     });
+            //TODO Animator
+            final int startScrollPosition = 1600000;
+            Animator animator = ObjectAnimator.ofInt(mRootView.findViewById(R.id.article_body),"scrollY",startScrollPosition).setDuration(300);
+            animator.setStartDelay(3000);
         } else {
             mRootView.setVisibility(View.GONE);
             titleView.setText("N/A");

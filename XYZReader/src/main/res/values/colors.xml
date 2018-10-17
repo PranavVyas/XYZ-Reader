@@ -35,7 +35,10 @@
     <color name="textTitleColor">#ffffff</color>
     <color name="textSubtitleColor">#ffe0e0e0</color>
     <color name="textBodyDark">#000000</color>
+    <color name="dots_indicator">#f50057</color>
+    <color name="dots_indicator_dark">#ff80cbc4</color>
 
     <color name="backgroundWhite">#ffffff</color>
+    <color name="backgroundDark">#616161</color>
 
 </resources>

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -14,6 +15,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +24,8 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +44,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.zip.Inflater;
 
 /**
  * An activity representing a list of Articles. This activity has different presentations for
@@ -48,7 +53,7 @@ import java.util.GregorianCalendar;
  * activity presents a grid of items as cards.
  */
 public class ArticleListActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = ArticleListActivity.class.toString();
     private Toolbar mToolbar;
@@ -59,29 +64,32 @@ public class ArticleListActivity extends AppCompatActivity implements
     // Use default locale format
     private SimpleDateFormat outputFormat = new SimpleDateFormat();
     // Most time functions can only handle 1902 - 2037
-    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
+    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2, 1, 1);
+    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedUtils.setUserTheme(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_list);
 
         mToolbar = findViewById(R.id.toolbar);
-
         mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
-
-
         mRecyclerView = findViewById(R.id.recycler_view);
-        getLoaderManager().initLoader(0, null, this);
+        setSupportActionBar(mToolbar);
 
+        getLoaderManager().initLoader(0, null, this);
         checkFirstTimeRunInstructions();
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
         if (savedInstanceState == null) {
             refresh();
         }
     }
 
-    private void checkFirstTimeRunInstructions(){
-        if(SharedUtils.isFirstTime(this,getLocalClassName())){
+    private void checkFirstTimeRunInstructions() {
+        if (SharedUtils.isFirstTime(this, getLocalClassName())) {
             final Display display = getWindowManager().getDefaultDisplay();
             final Drawable droid = ContextCompat.getDrawable(this, R.drawable.logo);
             final Rect droidTarget = new Rect(0, 0, droid.getIntrinsicWidth() * 2, droid.getIntrinsicHeight() * 2);
@@ -89,22 +97,25 @@ public class ArticleListActivity extends AppCompatActivity implements
 
             new TapTargetSequence(this)
                     .targets(
-                        TapTarget.forBounds(droidTarget,"Welcome To XYZ Reader","This is an app For reading the feeds from internet right inside your phone")
-                            .tintTarget(false)
-                            .cancelable(false)
-                            .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
-                            .outerCircleColor(R.color.primaryLightColor),
-                        TapTarget.forBounds(droidTarget,"NextSteps","Touch on any item to continue")
-                             .tintTarget(false)
-                             .cancelable(false)
-                             .outerCircleColor(R.color.primaryLightColor)
-                                .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
-                        ).listener(new TapTargetSequence.Listener() {
+                            TapTarget.forBounds(droidTarget, getString(R.string.title_main_step_1), getString(R.string.desc_main_step_1))
+                                    .tintTarget(false)
+                                    .cancelable(false)
+                                    .textColor(R.color.primaryTextColor)
+                                    .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
+                                    .outerCircleColor(R.color.primaryLightColor),
+                            TapTarget.forBounds(droidTarget, getString(R.string.title_main_step_2), getString(R.string.desc_main_step_2))
+                                    .tintTarget(false)
+                                    .cancelable(false)
+                                    .textColor(R.color.secondaryTextColor)
+                                    .outerCircleColor(R.color.secondaryColor)
+                                    .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
+                    ).listener(new TapTargetSequence.Listener() {
                 @Override
                 public void onSequenceFinish() {
                     Toast.makeText(ArticleListActivity.this, "Give it a try Now...!", Toast.LENGTH_SHORT).show();
-                    SharedUtils.setFirstTimeRun(ArticleListActivity.this,getLocalClassName(),false);
+                    SharedUtils.setFirstTimeRun(ArticleListActivity.this, getLocalClassName(), false);
                 }
+
                 @Override
                 public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
 
@@ -120,6 +131,12 @@ public class ArticleListActivity extends AppCompatActivity implements
 
     private void refresh() {
         startService(new Intent(this, UpdaterService.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -170,6 +187,11 @@ public class ArticleListActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mRecyclerView.setAdapter(null);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        this.recreate();
     }
 
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
@@ -227,8 +249,8 @@ public class ArticleListActivity extends AppCompatActivity implements
             } else {
                 holder.subtitleView.setText(Html.fromHtml(
                         outputFormat.format(publishedDate)
-                        + "<br/>" + " by "
-                        + mCursor.getString(ArticleLoader.Query.AUTHOR)));
+                                + "<br/>" + " by "
+                                + mCursor.getString(ArticleLoader.Query.AUTHOR)));
             }
 
             holder.thumbnailView.setImageUrl(
@@ -250,9 +272,26 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         public ViewHolder(View view) {
             super(view);
-            thumbnailView = (DynamicHeightNetworkImageView) view.findViewById(R.id.thumbnail);
-            titleView = (TextView) view.findViewById(R.id.article_title);
-            subtitleView = (TextView) view.findViewById(R.id.article_subtitle);
+            thumbnailView = view.findViewById(R.id.thumbnail);
+            titleView = view.findViewById(R.id.article_title);
+            subtitleView = view.findViewById(R.id.article_subtitle);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        new MenuInflater(this).inflate(R.menu.main_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.action_settings:
+                Intent intent = new Intent(this,SettingsActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return true;
     }
 }

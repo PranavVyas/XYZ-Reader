@@ -8,5 +8,25 @@
     <string name="action_share">Share</string>
 
     <string name="up">Up</string>
+    <string name="title_detail_step_2">Controls and Description</string>
+    <string name="title_detail_step_1">Welcome To Article Detail Page</string>
+    <string name="desc_detail_setp_1">This is detail page in which you can read articles and also share using the Floating Action Button</string>
+    <string name="desc_detail_step_2">Swipe to access the other articles also this article can be seen in indicator below. Click on Show More to reveal full article, Note that reveling full article may cause device to work hard so it might not be able to cache the full state after two swipes!</string>
+    <string name="desc_main_step_2">Touch on any item to continue</string>
+    <string name="title_main_step_2">NextSteps</string>
+    <string name="title_main_step_1">Welcome To XYZ Reader</string>
+    <string name="desc_main_step_1">This is an app For reading the feeds from internet right inside your phone</string>
+    <string name="pref_dark_theme_summery_off">Dark theme Disabled.
+        Enabling Dark theme might save batttery in some screen types</string>
+    <string name="pref_dark_theme_summery_on">Dark theme Enabled</string>
+    <string name="pref_dark_theme_title">Dark Theme</string>
+    <string name="key_pref_dark_theme">pref_dark_there</string>
+    <string name="menu_main_settings">Settings</string>
+    <string name="pref_dots_clickable_summery_on">Disable touch on Page View Indicator if you are having problems dots Indicator</string>
+    <string name="pref_dots_clickable_summery_off">Enable touch on Page View Indicator to enable quick navigation by touching the dot available at bottom</string>
+    <string name="pref_dots_clickable_title">Dots Indicator Touchable</string>
+    <string name="key_pref_dots_clickable">pref_dot_indicator_clickable</string>
+    <string name="prefcat_ui">UI Tweaks</string>
+    <string name="prefcat_experimental">Experimental</string>
 
 </resources>

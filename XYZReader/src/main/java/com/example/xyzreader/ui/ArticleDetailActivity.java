@@ -1,19 +1,26 @@
 package com.example.xyzreader.ui;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
+import android.content.DialogInterface;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Display;
@@ -35,7 +42,7 @@ import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
  * An activity representing a single Article detail screen, letting you swipe between articles.
  */
 public class ArticleDetailActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>,SharedPreferences.OnSharedPreferenceChangeListener {
 
     private Cursor mCursor;
     private long mStartId;
@@ -48,9 +55,12 @@ public class ArticleDetailActivity extends AppCompatActivity
     private MyPagerAdapter mPagerAdapter;
     private View mUpButtonContainer;
     private View mUpButton;
+    private DotsIndicator indicator;
+    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedUtils.setUserTheme(this);
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().getDecorView().setSystemUiVisibility(
@@ -62,11 +72,11 @@ public class ArticleDetailActivity extends AppCompatActivity
         mPagerAdapter = new MyPagerAdapter(getFragmentManager());
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
-
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mPager.setPageMargin((int) TypedValue
                 .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics()));
         mPager.setPageMarginDrawable(new ColorDrawable(0x22000000));
-        final DotsIndicator indicator = (DotsIndicator) findViewById(R.id.dots_indicator);
+        indicator = findViewById(R.id.dots_indicator);
         ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -90,7 +100,7 @@ public class ArticleDetailActivity extends AppCompatActivity
         };
         mPager.addOnPageChangeListener(pageChangeListener);
         //TODO Indicator
-        indicator.setDotsClickable(true);
+        indicator.setDotsClickable(mPrefs.getBoolean(getString(R.string.key_pref_dots_clickable),false));
         indicator.setViewPager(mPager);
 
         mUpButtonContainer = findViewById(R.id.up_container);
@@ -134,16 +144,18 @@ public class ArticleDetailActivity extends AppCompatActivity
 
             new TapTargetSequence(this)
                     .targets(
-                            TapTarget.forBounds(droidTarget, "Welcome To Article Detail Page", "This is detail page in which you can read articles and also share using the Floating Action Button")
+                            TapTarget.forBounds(droidTarget, getString(R.string.title_detail_step_1), getString(R.string.desc_detail_setp_1))
                                     .tintTarget(false)
                                     .cancelable(false)
+                                    .textColor(R.color.primaryTextColor)
                                     .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
                                     .outerCircleColor(R.color.primaryLightColor),
-                            TapTarget.forBounds(droidTarget, "Controls and Description", "Swipe to access the other articles also this article can be seen in indicator below. Click on Show More to reveal full article, Note that reveling full article may cause device to work hard so it might no table to cache the full state after two swipes!")
+                            TapTarget.forBounds(droidTarget, getString(R.string.title_detail_step_2), getString(R.string.desc_detail_step_2))
                                     .tintTarget(false)
                                     .cancelable(false)
+                                    .textColor(R.color.secondaryTextColor)
                                     .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
-                                    .outerCircleColor(R.color.primaryLightColor)
+                                    .outerCircleColor(R.color.secondaryColor)
                     ).listener(new TapTargetSequence.Listener() {
                 @Override
                 public void onSequenceFinish() {
@@ -208,8 +220,14 @@ public class ArticleDetailActivity extends AppCompatActivity
         mUpButton.setTranslationY(Math.min(mSelectedItemUpButtonFloor - upButtonNormalBottom, 0));
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        final boolean newPref = sharedPreferences.getBoolean(getString(R.string.key_pref_dots_clickable), false);
+        indicator.setDotsClickable(newPref);
+    }
+
     private class MyPagerAdapter extends FragmentStatePagerAdapter {
-        public MyPagerAdapter(FragmentManager fm) {
+        MyPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -233,5 +251,8 @@ public class ArticleDetailActivity extends AppCompatActivity
         public int getCount() {
             return (mCursor != null) ? mCursor.getCount() : 0;
         }
+
     }
 }
+
+
