@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/main_default_logo_image"
         app:elevation="@dimen/dimen_default_appbar_main"
-        android:background="#2979ff">
+        android:background="@color/primaryColor">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/text_title_app_main"

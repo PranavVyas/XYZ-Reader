@@ -25,6 +25,7 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         <item name="customBackgroundTextView">@color/backgroundWhite</item>
         <item name="customDotIndicator">@color/dots_indicator</item>
+        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <style name="Theme.Bacon.Dark" parent="@style/Theme.AppCompat.NoActionBar">
@@ -36,6 +37,7 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         <item name="customBackgroundTextView">@color/backgroundDark</item>
         <item name="customDotIndicator">@color/dots_indicator_dark</item>
+        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <!--<style name="Theme.Bacon.Detail">-->
