@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
-                android:background="#fff"
+                android:background="?attr/customBackgroundTextView"
                 android:orientation="vertical"
                 app:elevation="@dimen/dimen_default_ele_detail_body_txt"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -97,8 +97,8 @@
                     android:layout_marginBottom="@dimen/dimen_recycler_item_text_padding_vert"
                     android:fontFamily="sans-serif"
                     android:lineSpacingMultiplier="@fraction/detail_body_line_spacing_multiplier"
-                    android:textColor="@color/textBodyDark"
-                    android:textColorLink="@color/theme_accent"
+                    android:textColor="?android:attr/textAppearance"
+                    android:textColorLink="@color/secondaryColor"
                     android:textSize="18sp"
                     tools:text="@tools:sample/lorem/random" />
             </com.example.xyzreader.ui.MaxWidthLinearLayout>

@@ -22,6 +22,20 @@
         <item name="colorAccent">@color/secondaryColor</item>
         <item name="android:textAppearance">@color/primaryTextColor</item>
         <item name="android:textAppearanceInverse">@color/secondaryTextColor</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="customBackgroundTextView">@color/backgroundWhite</item>
+        <item name="customDotIndicator">@color/dots_indicator</item>
+    </style>
+
+    <style name="Theme.Bacon.Dark" parent="@style/Theme.AppCompat.NoActionBar">
+        <!--<item name="colorPrimary">@color/primaryColor</item>-->
+        <!--<item name="colorAccent">@color/secondaryColor</item>-->
+        <!--<item name="android:textAppearance">@color/primaryTextColor</item>-->
+        <!--<item name="android:textAppearanceInverse">@color/secondaryTextColor</item>-->
+        <item name="android:textAppearance">@color/secondaryTextColor</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="customBackgroundTextView">@color/backgroundDark</item>
+        <item name="customDotIndicator">@color/dots_indicator_dark</item>
     </style>
 
     <!--<style name="Theme.Bacon.Detail">-->
