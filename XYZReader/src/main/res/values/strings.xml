@@ -28,5 +28,6 @@
     <string name="key_pref_dots_clickable">pref_dot_indicator_clickable</string>
     <string name="prefcat_ui">UI Tweaks</string>
     <string name="prefcat_experimental">Experimental</string>
+    <string name="read_more_btn">Read More</string>
 
 </resources>
