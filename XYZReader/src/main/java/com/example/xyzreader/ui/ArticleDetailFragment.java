@@ -16,6 +16,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
@@ -32,11 +34,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.example.xyzreader.data.RecylerTextLoader;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
+
 /**
  * A fragment representing a single Article detail screen. This fragment is
  * either contained in a {@link ArticleListActivity} in two-pane mode (on
@@ -54,6 +61,7 @@ public class ArticleDetailFragment extends Fragment implements
     private View mRootView;
     private int mMutedColor = 0xFF333333;
     private ObservableScrollView mScrollView;
+
     private DrawInsetsFrameLayout mDrawInsetsFrameLayout;
     private ColorDrawable mStatusBarColorDrawable;
     private static final int UPDATE_TEXT_VIEW = 223;
@@ -65,6 +73,9 @@ public class ArticleDetailFragment extends Fragment implements
     private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
     private Button mButton;
+
+    private RecylerTextLoader adapter;
+    boolean expandedText;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -209,7 +220,6 @@ public class ArticleDetailFragment extends Fragment implements
         TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
         final TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
-        //ExpandableTextView bodyView = (ExpandableTextView) mRootView.findViewById(R.id.expandable_tv);
         //bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
         if (mCursor != null) {
@@ -237,12 +247,15 @@ public class ArticleDetailFragment extends Fragment implements
 
             }
 
-            bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />").substring(0,1000) + " (contd...)"));
-
+            initRecycler((RecyclerView) mRootView.findViewById(R.id.recycler_view_main));
+            loadDetailsViaRecyclerView(true);
+            //TODO Optimizing
+            //bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />").substring(0,1000) + " (contd...)"));
+            expandedText = false;
             mButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(bodyView.getText().length() < 1015) {
+                    if(!expandedText) {
                         final Handler mHandler = new Handler() {
                             public void handleMessage(Message msg) {
                                 bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
@@ -254,11 +267,15 @@ public class ArticleDetailFragment extends Fragment implements
                                 mHandler.sendEmptyMessage(UPDATE_TEXT_VIEW);
                             }
                         });
-                        threadToLoadTextView.start();
+                        //threadToLoadTextView.start();
+                        loadDetailsViaRecyclerView(false);
+                        expandedText = true;
                         mButton.setText("Read Less");
                     }else{
                         mButton.setText("Read More");
-                        bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />").substring(0,1000) + " (contd...)"));
+                        //bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />").substring(0,1000) + " (contd...)"));
+                        loadDetailsViaRecyclerView(true);
+                        expandedText = false;
                     }
                 }
             });
@@ -283,9 +300,9 @@ public class ArticleDetailFragment extends Fragment implements
                         }
                     });
             //TODO Animator
-            final int startScrollPosition = 1600000;
-            Animator animator = ObjectAnimator.ofInt(mRootView.findViewById(R.id.article_body),"scrollY",startScrollPosition).setDuration(300);
-            animator.setStartDelay(3000);
+//            final int startScrollPosition = 1600000;
+//            Animator animator = ObjectAnimator.ofInt(mRootView.findViewById(R.id.meta_bar),"scrollY",startScrollPosition).setDuration(300);
+//            animator.setStartDelay(100);
         } else {
             mRootView.setVisibility(View.GONE);
             titleView.setText("N/A");
@@ -334,5 +351,27 @@ public class ArticleDetailFragment extends Fragment implements
         return mIsCard
                 ? (int) mPhotoContainerView.getTranslationY() + mPhotoView.getHeight() - mScrollY
                 : mPhotoView.getHeight() - mScrollY;
+    }
+
+    private List<String> generateStringArrayFromLine(String str,String escapeString){
+        List<String> result = Arrays.asList(str.split(escapeString));
+        return result;
+    }
+    private void loadDetailsViaRecyclerView(boolean loadShortText){
+        String fullString;
+        if(loadShortText) {
+            fullString = mCursor.getString(ArticleLoader.Query.BODY).substring(0,1000);
+        }else{
+            fullString = mCursor.getString(ArticleLoader.Query.BODY);
+        }
+        List<String> paragraphs = generateStringArrayFromLine(fullString,"(\r\n|\n)");
+        Log.d(TAG, "loadDetailsViaRecyclerView: No Of Paragraph "+paragraphs.size());
+        adapter.updateParagraph(paragraphs);
+    }
+
+    private void initRecycler(RecyclerView recyclerView){
+        adapter = new RecylerTextLoader(getActivity());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 }

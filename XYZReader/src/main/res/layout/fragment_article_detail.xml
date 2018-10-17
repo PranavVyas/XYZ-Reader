@@ -75,6 +75,7 @@
 
             <com.example.xyzreader.ui.MaxWidthLinearLayout
                 android:id="@+id/maxWidthLinearLayout"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -90,6 +91,7 @@
                     android:id="@+id/article_body"
                     style="?android:attr/textAppearanceMedium"
                     android:layout_width="match_parent"
+
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/detail_inner_horiz_margin"
                     android:layout_marginRight="@dimen/detail_inner_horiz_margin"
@@ -103,25 +105,36 @@
                     tools:text="@tools:sample/lorem/random" />
             </com.example.xyzreader.ui.MaxWidthLinearLayout>
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_main"
+                android:layout_width="match_parent"
+                android:nestedScrollingEnabled="true"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:background="?attr/customBackgroundTextView"
+                app:elevation="@dimen/dimen_default_ele_detail_body_txt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/photo_container"/>
+
             <Button
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_recycler_item_text_padding_vert"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="@dimen/dimen_recycler_item_text_padding_vert"
                 android:background="@drawable/shape_button_rounded"
                 android:paddingStart="@dimen/dimen_recycler_item_text_padding_horiz"
                 android:paddingTop="@dimen/dimen_recycler_item_text_padding_vert"
                 android:paddingEnd="@dimen/dimen_recycler_item_text_padding_horiz"
                 android:paddingBottom="@dimen/dimen_recycler_item_text_padding_vert"
-                android:text="Read More"
+                android:text="@string/read_more_btn"
                 android:textColor="@color/secondaryTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/maxWidthLinearLayout" />
-
-            <!--TODO Add drawable for Button and Set Text resource-->
+                app:layout_constraintTop_toBottomOf="@+id/recycler_view_main" />
 
         </android.support.constraint.ConstraintLayout>
     </com.example.xyzreader.ui.ObservableScrollView>
@@ -134,6 +147,7 @@
         android:contentDescription="@string/action_share"
         android:src="@drawable/ic_share"
         app:fabSize="normal"
+        app:pressedTranslationZ="@dimen/dimen_fab_pressed_rise"
         app:useCompatPadding="true" />
 
 </com.example.xyzreader.ui.DrawInsetsFrameLayout>

@@ -99,7 +99,6 @@ public class ArticleDetailActivity extends AppCompatActivity
             }
         };
         mPager.addOnPageChangeListener(pageChangeListener);
-        //TODO Indicator
         indicator.setDotsClickable(mPrefs.getBoolean(getString(R.string.key_pref_dots_clickable),false));
         indicator.setViewPager(mPager);
 
@@ -188,7 +187,6 @@ public class ArticleDetailActivity extends AppCompatActivity
         // Select the start ID
         if (mStartId > 0) {
             mCursor.moveToFirst();
-            // TODO: optimize
             while (!mCursor.isAfterLast()) {
                 if (mCursor.getLong(ArticleLoader.Query._ID) == mStartId) {
                     final int position = mCursor.getPosition();
