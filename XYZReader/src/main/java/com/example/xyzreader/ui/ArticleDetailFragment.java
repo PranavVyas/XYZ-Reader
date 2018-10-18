@@ -1,7 +1,5 @@
 package com.example.xyzreader.ui;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Intent;
@@ -10,10 +8,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.graphics.Palette;
@@ -39,7 +36,6 @@ import com.example.xyzreader.data.RecylerTextLoader;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -61,14 +57,11 @@ public class ArticleDetailFragment extends Fragment implements
     private long mItemId;
     private View mRootView;
     private int mMutedColor = 0xFF333333;
-    //TODO 2 private ObservableScrollView mScrollView;
-
     private DrawInsetsFrameLayout mDrawInsetsFrameLayout;
     private ColorDrawable mStatusBarColorDrawable;
     private static final int UPDATE_TEXT_VIEW = 223;
 
     private int mTopInset;
-    //TODO 2 private View mPhotoContainerView;
     private ImageView mPhotoView;
     private int mScrollY;
     private boolean mIsCard = false;
@@ -141,20 +134,7 @@ public class ArticleDetailFragment extends Fragment implements
             }
         });
 
-        //TODO 2 mScrollView = mRootView.findViewById(R.id.scrollview);
-//      TODO 2 mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
-//      TODO 2      @Override
-//      TODO 2      public void onScrollChanged() {
-//      TODO 2          mScrollY = mScrollView.getScrollY();
-//      TODO 2          getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
-//      TODO 2          mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
-//      TODO 2          updateStatusBar();
-//            TODO 2}
-//        TODO 2});
-
         mPhotoView = mRootView.findViewById(R.id.photo);
-       //TODO 2 mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
-
         mStatusBarColorDrawable = new ColorDrawable(0);
 
         mRootView.findViewById(R.id.share_fab).setOnClickListener(new View.OnClickListener() {
@@ -217,23 +197,19 @@ public class ArticleDetailFragment extends Fragment implements
             return;
         }
 
-        //TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
-        //TextView titleToolbar = mRootView.findViewById(R.id.toolbar_text_title);
-        TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
+        TextView bylineView = mRootView.findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
-        //TODO 2 final TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
-        //bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
         if (mCursor != null) {
-            //mRootView.setAlpha(0);
+            mRootView.setAlpha(0);
             mRootView.setVisibility(View.VISIBLE);
-            //mRootView.animate().alpha(1);
-            //titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
-            ((CollapsingToolbarLayout)mRootView.findViewById(R.id.collapsing_detail)).setTitle(mCursor.getString(ArticleLoader.Query.TITLE));
-            ((CollapsingToolbarLayout)mRootView.findViewById(R.id.collapsing_detail)).setExpandedTitleColor(getActivity().getResources().getColor(R.color.backgroundWhite));
-            ((CollapsingToolbarLayout)mRootView.findViewById(R.id.collapsing_detail)).setCollapsedTitleTextColor(getActivity().getResources().getColor(R.color.backgroundWhite));
-
-            //titleToolbar.setText(mCursor.getString(ArticleLoader.Query.TITLE));
+            mRootView.animate().alpha(1);
+            CollapsingToolbarLayout collapsingToolbarLayout = mRootView.findViewById(R.id.collapsing_detail);
+            collapsingToolbarLayout.setTitle(mCursor.getString(ArticleLoader.Query.TITLE));
+            collapsingToolbarLayout.setExpandedTitleColor(getActivity().getResources().getColor(R.color.backgroundWhite));
+            collapsingToolbarLayout.setCollapsedTitleTextColor(getActivity().getResources().getColor(R.color.backgroundWhite));
+            collapsingToolbarLayout.setCollapsedTitleTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
+            collapsingToolbarLayout.setExpandedTitleTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
             Date publishedDate = parsePublishedDate();
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
@@ -257,31 +233,16 @@ public class ArticleDetailFragment extends Fragment implements
 
             initRecycler((RecyclerView) mRootView.findViewById(R.id.recycler_view_main));
             loadDetailsViaRecyclerView(true);
-            //TODO Optimizing
-            //bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />").substring(0,1000) + " (contd...)"));
             expandedText = false;
             mButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(!expandedText) {
-//                        final Handler mHandler = new Handler() {
-//                            public void handleMessage(Message msg) {
-//                                //TODO 2 bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
-//                            }
-//                        };
-//                        Thread threadToLoadTextView = new Thread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                mHandler.sendEmptyMessage(UPDATE_TEXT_VIEW);
-//                            }
-//                        });
-//                        threadToLoadTextView.start();
                         loadDetailsViaRecyclerView(false);
                         expandedText = true;
                         mButton.setText(R.string.read_less_btn);
                     }else{
                         mButton.setText(R.string.read_more_btn);
-                        //bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />").substring(0,1000) + " (contd...)"));
                         loadDetailsViaRecyclerView(true);
                         expandedText = false;
                     }
@@ -294,7 +255,7 @@ public class ArticleDetailFragment extends Fragment implements
                         public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
                             Bitmap bitmap = imageContainer.getBitmap();
                             if (bitmap != null) {
-                                Palette p = Palette.generate(bitmap, 12);
+                                Palette p = Palette.from(bitmap).generate();
                                 mMutedColor = p.getDarkMutedColor(0xFF333333);
                                 mPhotoView.setImageBitmap(imageContainer.getBitmap());
                                 mRootView.findViewById(R.id.meta_bar);
@@ -307,16 +268,9 @@ public class ArticleDetailFragment extends Fragment implements
                             Toast.makeText(getActivity(), "Internet Connection Error ...Check Your Connection", Toast.LENGTH_SHORT).show();
                         }
                     });
-            //TODO Animator
-//            final int startScrollPosition = 1600000;
-//            Animator animator = ObjectAnimator.ofInt(mRootView.findViewById(R.id.meta_bar),"scrollY",startScrollPosition).setDuration(300);
-//            animator.setStartDelay(100);
         } else {
             mRootView.setVisibility(View.GONE);
-            //titleView.setText("N/A");
-            //titleToolbar.setText("N/A");
             bylineView.setText("N/A");
-            //TODO 2 bodyView.setText("N/A");
         }
     }
 
@@ -350,17 +304,6 @@ public class ArticleDetailFragment extends Fragment implements
         mCursor = null;
         bindViews();
     }
-
-    //TODO 2 public int getUpButtonFloor() {
-    //TODO 2     if (mPhotoContainerView == null || mPhotoView.getHeight() == 0) {
-    //TODO 2         return Integer.MAX_VALUE;
-    //TODO 2     }
-    //TODO 2
-    //TODO 2     // account for parallax
-    //TODO 2     return mIsCard
-    //TODO 2             ? (int) mPhotoContainerView.getTranslationY() + mPhotoView.getHeight() - mScrollY
-    //TODO 2             : mPhotoView.getHeight() - mScrollY;
-    //TODO 2 }
 
     private List<String> generateStringArrayFromLine(String str,String escapeString){
         List<String> result = Arrays.asList(str.split(escapeString));

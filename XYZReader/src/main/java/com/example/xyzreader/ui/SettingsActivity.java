@@ -27,22 +27,34 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
-//        final boolean newPref = sharedPreferences.getBoolean(getString(R.string.key_pref_dots_clickable), false);
-//        if (newPref) {
-//            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-//            dialogBuilder.setTitle("Experimental Feature Enabled")
-//                    .setMessage("Sometimes Enabling \"Dots Clickable\" feature sometimes leads to freezing of dots and thus sometimes Indicator Dots are misbehaved")
-//                    .setPositiveButton("Continue to Enable", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                        }
-//                    })
-//                    .setCancelable(false);
-//        }
-        this.recreate();
-
+        if(key == getString(R.string.key_pref_dots_clickable)) {
+            final boolean newPref = sharedPreferences.getBoolean(getString(R.string.key_pref_dots_clickable), false);
+            if (newPref) {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+                dialogBuilder.setTitle(R.string.dialog_settings_dots_indicator_title)
+                        .setMessage(R.string.dialog_settings_dots_indicator_message)
+                        .setPositiveButton(R.string.dialog_settings_dots_indicator_positivebtn, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SettingsActivity.this.recreate();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(R.string.dialog_settings_dots_indicator_negativebtn, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this).edit();
+                                edit.putBoolean(getString(R.string.key_pref_dots_clickable), false);
+                                edit.apply();
+                                dialog.dismiss();
+                                SettingsActivity.this.recreate();
+                            }
+                        })
+                        .setCancelable(false).create().show();
+            }
+        }else if (key == getString(R.string.key_pref_dark_theme)){
+            this.recreate();
+        }
     }
 
     @Override

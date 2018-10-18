@@ -11,9 +11,9 @@
     <string name="title_detail_step_2">Controls and Description</string>
     <string name="title_detail_step_1">Welcome To Article Detail Page</string>
     <string name="desc_detail_setp_1">This is detail page in which you can read articles and also share using the Floating Action Button</string>
-    <string name="desc_detail_step_2">Swipe to access the other articles also this article can be seen in indicator below. Click on Show More to reveal full article, Note that reveling full article may cause device to work hard so it might not be able to cache the full state after two swipes!</string>
-    <string name="desc_main_step_2">Touch on any item to continue</string>
-    <string name="title_main_step_2">NextSteps</string>
+    <string name="desc_detail_step_2">Swipe to access the other articles also this article can be seen in indicator below. Click on Show More to reveal full article!</string>
+    <string name="desc_main_step_2">Touch on any item to continue, at any point on the screen swipe down to Refresh The List and sync again</string>
+    <string name="title_main_step_2">Next Steps</string>
     <string name="title_main_step_1">Welcome To XYZ Reader</string>
     <string name="desc_main_step_1">This is an app For reading the feeds from internet right inside your phone</string>
     <string name="pref_dark_theme_summery_off">Dark theme Disabled.
@@ -30,5 +30,11 @@
     <string name="prefcat_experimental">Experimental</string>
     <string name="read_more_btn">Read Full Article</string>
     <string name="read_less_btn">Read Less</string>
+    <string name="dialog_settings_dots_indicator_title">Experimental Feature Enabled</string>
+    <string name="dialog_settings_dots_indicator_message">Sometimes Enabling \"Dots Clickable\" feature sometimes leads to freezing of dots and thus sometimes Indicator Dots are misbehaved</string>
+    <string name="dialog_settings_dots_indicator_positivebtn">Continue to Enable</string>
+    <string name="dialog_settings_dots_indicator_negativebtn">Don\'t Enable Now</string>
+    <string name="desc_page_title_image">Page Title Image</string>
+    <string name="imgdesc_logo_title_image">Logo Title Image</string>
 
 </resources>
