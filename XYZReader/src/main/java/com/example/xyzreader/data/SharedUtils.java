@@ -3,7 +3,6 @@ package com.example.xyzreader.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
 
 import com.example.xyzreader.R;
 

@@ -15,5 +15,7 @@
     <dimen name="dimen_detail_hight_indicator_container">32dp</dimen>
     <dimen name="dimen_fab_pressed_rise">6dp</dimen>
     <dimen name="dimen_default_appbar_main">4dp</dimen>
+    <dimen name="dimen_btn_readmore_hight">32dp</dimen>
+    <dimen name="dimen_recycler_item_text_padding_horiz_small">28dp</dimen>
 
 </resources>

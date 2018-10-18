@@ -3,17 +3,16 @@ package com.example.xyzreader.ui;
 import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,29 +21,23 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.data.SharedUtils;
 import com.example.xyzreader.data.UpdaterService;
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetSequence;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.zip.Inflater;
 
 /**
  * An activity representing a list of Articles. This activity has different presentations for
@@ -81,51 +74,38 @@ public class ArticleListActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
 
         getLoaderManager().initLoader(0, null, this);
-        //checkFirstTimeRunInstructions();
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         if (savedInstanceState == null) {
             refresh();
         }
+        checkFirstTimeRunInstructions();
     }
 
     private void checkFirstTimeRunInstructions() {
-        if (SharedUtils.isFirstTime(this, getLocalClassName())) {
-            final Display display = getWindowManager().getDefaultDisplay();
-            final Drawable droid = ContextCompat.getDrawable(this, R.drawable.logo);
-            final Rect droidTarget = new Rect(0, 0, droid.getIntrinsicWidth() * 2, droid.getIntrinsicHeight() * 2);
-            droidTarget.offset(0, display.getHeight() / 2);
-
-            new TapTargetSequence(this)
-                    .targets(
-                            TapTarget.forBounds(droidTarget, getString(R.string.title_main_step_1), getString(R.string.desc_main_step_1))
-                                    .tintTarget(false)
-                                    .cancelable(false)
-                                    .textColor(R.color.primaryTextColor)
-                                    .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
-                                    .outerCircleColor(R.color.primaryLightColor),
-                            TapTarget.forBounds(droidTarget, getString(R.string.title_main_step_2), getString(R.string.desc_main_step_2))
-                                    .tintTarget(false)
-                                    .cancelable(false)
-                                    .textColor(R.color.secondaryTextColor)
-                                    .outerCircleColor(R.color.secondaryColor)
-                                    .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
-                    ).listener(new TapTargetSequence.Listener() {
-                @Override
-                public void onSequenceFinish() {
-                    Toast.makeText(ArticleListActivity.this, "Give it a try Now...!", Toast.LENGTH_SHORT).show();
-                    SharedUtils.setFirstTimeRun(ArticleListActivity.this, getLocalClassName(), false);
-                }
-
-                @Override
-                public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
-
-                }
-
-                @Override
-                public void onSequenceCanceled(TapTarget lastTarget) {
-                    Toast.makeText(ArticleListActivity.this, "Why stop now? Only two steps are there!", Toast.LENGTH_SHORT).show();
-                }
-            }).start();
+        if (SharedUtils.isFirstTime(this,TAG)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final AlertDialog secondDialog = builder.setTitle(R.string.title_main_step_2)
+                    .setMessage(R.string.desc_main_step_2)
+                    .setPositiveButton("OK, I understand", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SharedUtils.setFirstTimeRun(ArticleListActivity.this,TAG,false);
+                            dialog.dismiss();
+                        }
+                    }).setCancelable(false)
+                    .create();
+            AlertDialog alertDialog = builder.setTitle(R.string.title_main_step_1)
+                    .setMessage(R.string.desc_main_step_1)
+                    .setPositiveButton("Next", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            secondDialog.show();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setCancelable(false)
+                    .create();
+            alertDialog.show();
         }
     }
 

@@ -1,11 +1,8 @@
 package com.example.xyzreader.ui;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
-import android.content.DialogInterface;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -14,20 +11,17 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.xyzreader.R;
@@ -44,6 +38,7 @@ import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 public class ArticleDetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>,SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private static final String TAG = "ArticleDetailActivity";
     private Cursor mCursor;
     private long mStartId;
 
@@ -70,7 +65,7 @@ public class ArticleDetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_article_detail);
         getLoaderManager().initLoader(0, null, this);
         mPagerAdapter = new MyPagerAdapter(getFragmentManager());
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager = findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mPager.setPageMargin((int) TypedValue
@@ -135,7 +130,7 @@ public class ArticleDetailActivity extends AppCompatActivity
     }
 
     private void checkFirstRunInstruction() {
-        if (SharedUtils.isFirstTime(this, getLocalClassName())) {
+        if (SharedUtils.isFirstTime(this, TAG)) {
             final Display display = getWindowManager().getDefaultDisplay();
             final Drawable droid = ContextCompat.getDrawable(this, R.drawable.logo);
             final Rect droidTarget = new Rect(0, 0, droid.getIntrinsicWidth() * 2, droid.getIntrinsicHeight() * 2);
@@ -148,18 +143,20 @@ public class ArticleDetailActivity extends AppCompatActivity
                                     .cancelable(false)
                                     .textColor(R.color.primaryTextColor)
                                     .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
-                                    .outerCircleColor(R.color.primaryLightColor),
+                                    .outerCircleColor(R.color.primaryLightColor)
+                            .targetCircleColorInt(this.getResources().getColor(R.color.primaryColor)),
                             TapTarget.forBounds(droidTarget, getString(R.string.title_detail_step_2), getString(R.string.desc_detail_step_2))
                                     .tintTarget(false)
                                     .cancelable(false)
                                     .textColor(R.color.secondaryTextColor)
                                     .icon(getResources().getDrawable(R.drawable.ic_info_black_24dp))
                                     .outerCircleColor(R.color.secondaryColor)
+                                    .targetCircleColorInt(this.getResources().getColor(R.color.secondaryColor))
                     ).listener(new TapTargetSequence.Listener() {
                 @Override
                 public void onSequenceFinish() {
                     Toast.makeText(ArticleDetailActivity.this, "Give it a try Now...!", Toast.LENGTH_SHORT).show();
-                    SharedUtils.setFirstTimeRun(ArticleDetailActivity.this, getLocalClassName(), false);
+                    SharedUtils.setFirstTimeRun(ArticleDetailActivity.this, TAG, false);
                 }
 
                 @Override
@@ -208,7 +205,6 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     public void onUpButtonFloorChanged(long itemId, ArticleDetailFragment fragment) {
         if (itemId == mSelectedItemId) {
-            //TODO 2 mSelectedItemUpButtonFloor = fragment.getUpButtonFloor();
             updateUpButtonPosition();
         }
     }
@@ -228,28 +224,23 @@ public class ArticleDetailActivity extends AppCompatActivity
         MyPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-
         @Override
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
             ArticleDetailFragment fragment = (ArticleDetailFragment) object;
             if (fragment != null) {
-                //TODO 2 mSelectedItemUpButtonFloor = fragment.getUpButtonFloor();
                 updateUpButtonPosition();
             }
         }
-
         @Override
         public Fragment getItem(int position) {
             mCursor.moveToPosition(position);
             return ArticleDetailFragment.newInstance(mCursor.getLong(ArticleLoader.Query._ID));
         }
-
         @Override
         public int getCount() {
             return (mCursor != null) ? mCursor.getCount() : 0;
         }
-
     }
 }
 
